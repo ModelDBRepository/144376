@@ -1,0 +1,38 @@
+objref nil, tobj
+strdef tstr
+
+xpanel("Figures for Winograd et al. 2008")
+xradiobutton("fig 4 non-saturating", "nrnpython(\"execfile('demo_HPGA_non_saturating.py')\")")
+xradiobutton("fig 4 non-saturating, no Ih", "nrnpython(\"execfile('demo_HPGA_non_saturating_noIh.py')\")")
+xradiobutton("Supplemental fig 7","nrnpython(\"execfile('demo_HPGA_saturating.py')\")")
+xpanel(5,100)
+
+pwmcnt = PWManager[0].count // the initial gui should not be dismissed
+
+objref vbox, hbox[3]
+use_boxes=1
+proc restart() {local i
+//	flush_list.remove_all()
+//	fast_flush_list.remove_all()
+	doNotify()
+	for (i= PWManager[0].count-1; i >= pwmcnt; i -= 1) {
+		PWManager[0].close(i)
+		doNotify()
+	}
+	sprint(tstr, "%s", $s1)
+
+	load_file(1, tstr)
+	vbox.intercept(0)
+	vbox.map()
+}
+
+proc new_row() {
+  if ($1>0) {
+    hbox[$1-1].intercept(0)
+    hbox[$1-1].map()
+  }
+
+  hbox[$1]=new HBox()
+  hbox[$1].intercept(1)
+}
+
